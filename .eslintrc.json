@@ -1,0 +1,16 @@
+{
+	"extends": "strongloop",
+	"parserOptions": {
+		"sourceType": "module",
+		"ecmaVersion": 8,
+	    "ecmaFeatures": {
+	        "jsx": true,
+	        "modules": true,
+	        "experimentalObjectRestSpread": true
+	    }
+	},
+	"env": {
+		"es6": true,
+		"jest": true
+	}
+}

@@ -1,27 +1,29 @@
-import { DataScheme } from '../../src/';
+import {DataScheme} from '../../src/';
 
-const datascheme = new DataScheme({
-	users: {},
+const datascheme = new DataScheme(
+  {
+    users: {},
 
-	todos: {},
+    todos: {},
 
-	comments: {}
-}, { idAttribute: 'objectId'})
+    comments: {},
+  },
+  {idAttribute: 'objectId'}
+);
 
 // Link models
 
 datascheme.model('todos').define({
-	owner: datascheme.model('users')
-})
+  owner: datascheme.model('users'),
+});
 
 datascheme.model('users').define({
-	todos: [datascheme.model('todos')]
-})
+  todos: [datascheme.model('todos')],
+});
 
 datascheme.model('comments').define({
-	todo: datascheme.model('todos'),
-	author: datascheme.model('users')
-})
+  todo: datascheme.model('todos'),
+  author: datascheme.model('users'),
+});
 
-
-export default datascheme
+export default datascheme;
