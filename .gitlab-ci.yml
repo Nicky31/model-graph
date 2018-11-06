@@ -1,0 +1,33 @@
+image: node:10
+
+before_script:  
+  - npm install
+
+cache:  
+  paths:
+    - node_modules/
+
+lint:
+  image: node:10
+  only:
+    - tags
+    - triggers  
+  script:
+    - npm run lint
+
+test:
+  image: node:10
+  only:
+    - tags
+    - triggers  
+  script:
+    - npm test
+
+publish:  
+  stage: deploy
+  only:
+    - tags
+    - triggers
+  script:
+    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+    - npm publish --access=public

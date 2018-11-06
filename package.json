@@ -1,10 +1,10 @@
 {
-  "name": "model-store",
-  "version": "1.0.0",
-  "description": "Data store management library",
+  "name": "model-graph",
+  "version": "0.2.0",
+  "description": "Normalized model graph management library",
   "main": "index.js",
   "scripts": {
-    "pretest": "eslint --ignore-path .gitignore .",
+    "lint": "eslint --ignore-path .gitignore .",
     "test": "jest"
   },
   "author": "Martin Caussanel",
