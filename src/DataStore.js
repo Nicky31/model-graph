@@ -1,8 +1,5 @@
-export default function DataStore({proto, idAttribute = 'id'} = {}) {
-  this.idAttribute = idAttribute;
-  this.proto = proto;
-  // Containing others store dependant keys needed by model
-  this.modelDependencies = {};
+export default function DataStore(model, opts) {
+  this.model = model
   // Mapping entity ids to entities
   this.entitiesMap = {};
   // Entities groups, maps groups names to entities id array
@@ -34,7 +31,7 @@ export default function DataStore({proto, idAttribute = 'id'} = {}) {
       if (!(name in this.groups)) {
         this.groups[name] = [];
       }
-      this.groups[name].push(entity[this.idAttribute]);
+      this.groups[name].push(entity[this.model.idAttribute]);
     });
     entity.__metas.groups = [...entity.__metas.groups, ...groups];
   }
@@ -54,7 +51,7 @@ export default function DataStore({proto, idAttribute = 'id'} = {}) {
   }
 
   function updateEntity(entity) {
-    const id = entity[this.idAttribute] + '';
+    const id = entity[this.model.idAttribute] + '';
     const current = this.get(id);
 
     // Defining prototypes (according to model's one + metadatas)
@@ -68,7 +65,7 @@ export default function DataStore({proto, idAttribute = 'id'} = {}) {
               groups: [],
             },
           },
-          this.proto
+          this.model.proto
         )
       );
     } else {
@@ -108,7 +105,7 @@ export default function DataStore({proto, idAttribute = 'id'} = {}) {
     if (old) {
       old.__metas.groups.forEach(name => {
         this.groups[name] = this.groups[name].map(
-          cur => (cur === oldId ? newEntity[this.idAttribute] : cur)
+          cur => (cur === oldId ? newEntity[this.model.idAttribute] : cur)
         );
       });
       newEntity.__metas.groups = old.__metas.groups;

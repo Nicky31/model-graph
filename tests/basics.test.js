@@ -18,8 +18,8 @@ test('Inserting datas', () => {
   ]).then(results => {
     results[0].map(
       user =>
-        expect(user).toEqual(db.users[user.objectId]) &&
-        expect(user).toEqual(stores.users.get(user.objectId))
+        expect(user).toEqual(db.users[user.id]) &&
+        expect(user).toEqual(stores.users.get(user.id))
     );
 
     results[1].map(
@@ -57,7 +57,7 @@ test('Updating datas with group', async() => {
 
   // Second simple update with incomplete input object
   var user = stores.users.get(0);
-  const update = {objectId: 0, lastname: 'pion'};
+  const update = {id: 0, lastname: 'pion'};
   await request('users').store({value: update}).result;
   expect({...user, ...update}).toEqual(stores.users.get(0));
 });
@@ -97,13 +97,13 @@ test('Replace', () => {
   var replacement = {
     name: 'pedro',
     todos: [],
-    objectId: 80,
+    id: 80,
   };
 
   request('users')
     .store({
       value: replacement,
-      replace: users[0].objectId,
+      replace: users[0].id,
     })
     .result.then(() => {
       expect(stores.users.getArray()[0]).toEqual(replacement);

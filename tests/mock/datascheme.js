@@ -2,7 +2,9 @@ import {DataScheme} from '../../src/';
 
 const datascheme = new DataScheme(
   {
-    users: {},
+    users: {
+      idAttribute: 'id'
+    },
 
     todos: {},
 
@@ -13,17 +15,16 @@ const datascheme = new DataScheme(
 
 // Link models
 
-datascheme.model('todos').define({
-  owner: datascheme.model('users'),
-});
+datascheme.model('users').link('todos', [datascheme.model('todos')], {
+  via: {
+    attr: 'owner'
+  }
+})
 
-datascheme.model('users').define({
-  todos: [datascheme.model('todos')],
-});
+datascheme.model('todos').link('owner', datascheme.model('users'))
 
-datascheme.model('comments').define({
-  todo: datascheme.model('todos'),
-  author: datascheme.model('users'),
-});
+datascheme.model('comments')
+  .link('todo', datascheme.model('todos'))
+  .link('author', datascheme.model('users'))
 
-export default datascheme;
+export default datascheme

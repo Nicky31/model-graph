@@ -130,7 +130,7 @@ export default function requestBuilder(datascheme) {
             return;
           }
 
-          ret = datascheme.normalize(ret, model);
+          ret = model.normalize(ret);
           // Loop over each different models extracted from api return
           var result = null;
           Object.keys(ret.entities).forEach(storeName => {
