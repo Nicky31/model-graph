@@ -2,7 +2,7 @@ export default function requestBuilder(datascheme) {
   return targetStore => {
     const store = datascheme.store(targetStore);
     const model = datascheme.model(targetStore);
-    const idAttribute = 'ifed';
+    const idAttribute = model.idAttribute;
     // Implements differents handlers linking user input / methods to stores
     return function ModelRequest(input) {
       this.result = Promise.resolve(input);
@@ -17,24 +17,9 @@ export default function requestBuilder(datascheme) {
         return this.value(store.get(id));
       };
 
-      this.otherwise = fn => {
-        this.result.then(result => {
-          if (typeof result !== 'undefined') {
-            return this;
-          }
-          return fn(this);
-        });
-        return this;
-      };
-
-      this.checkNotNull = () => {
-        this.result.then(ret => {
-          if (!ret) {
-            throw new Error({error: 'Empty request result !'});
-          }
-        });
-        return this;
-      };
+      this.then = function(...args) {
+        return this.result.then.call(this.result, ...args)
+      }
 
       // Perform call, save their result and metadatas
       // If oneshot is false, fn can't be called twice at the same time,
@@ -79,46 +64,51 @@ export default function requestBuilder(datascheme) {
         if (!(modelName in datascheme.autolinks)) {
           return;
         }
+        // Can this model fill another one ?
         var autolinks = datascheme.autolinks[modelName];
-        // Loop over each model that given one can fill
+        // Go through each of them
         autolinks.forEach(autolink => {
-          entities.forEach(entity => {
-            var id =
-              typeof entity[autolink.via] === 'object'
-                ? entity[autolink.via][idAttribute]
-                : entity[autolink.via];
-            // Try to find a linked model corresponding to 'id'
-            datascheme
-              .request(autolink.linkedModel)
-              .get(id)
-              .call(linkedModel => {
-                if (!linkedModel) {
-                  return;
-                }
-                this.updatedStores.add(autolink.linkedModel);
-                // A linked model exists ; update the link attribute
-                let updatedAttr = linkedModel[autolink.linkedAttr];
-                // Check if linked attribute is an array : concat
-                if (
-                  Array.isArray(updatedAttr) &&
-                  !updatedAttr.includes(entity[idAttribute])
-                ) {
-                  updatedAttr = [...updatedAttr, entity[idAttribute]];
-                } else if (
-                  !Array.isArray(updatedAttr) &&
-                  updatedAttr !== entity[idAttribute]
-                ) {
-                  updatedAttr = entity[idAttribute];
-                }
+          const linkedStore = datascheme.store(autolink.linkedModel)
+          const linkedModelIdAttr = linkedStore.model.idAttribute
+          let updates = [] // link updates we will push to linkedStore
 
-                datascheme.store(autolink.linkedModel).update({
-                  id,
-                  [autolink.linkedAttr]: updatedAttr,
-                });
-              });
-          });
-        });
-      };
+          // Get each of these entities that may fill remote entities of current autolink
+          entities.forEach(entity => {
+            const linkedId = typeof entity[autolink.via] === 'object'
+              ? entity[autolink.via][linkedModelIdAttr]
+              : entity[autolink.via];              
+            const linkedEntity = linkedStore.get(linkedId)
+            if (!linkedEntity) {
+              return
+            }
+            // Check if linked attribute is an array : concat
+            let updatedAttr = linkedEntity[autolink.linkedAttr];
+            if (Array.isArray(updatedAttr) &&
+              !updatedAttr.includes(entity[idAttribute])
+            ) {
+              updatedAttr = [...updatedAttr, entity[idAttribute]];
+            } else if (!Array.isArray(updatedAttr) &&
+              updatedAttr !== entity[idAttribute]
+            ) {
+              updatedAttr = entity[idAttribute];
+            } else {
+              return
+            }              
+          
+            // Current entity can link to another model entity ; push it
+            updates.push({
+              [linkedModelIdAttr]: linkedId,
+              [autolink.linkedAttr]: updatedAttr,
+            })              
+          })
+
+          // Update all of these linked entities
+          if (updates.length) {
+            linkedStore.update(updates)
+            this.updatedStores.add(autolink.linkedModel);
+          }
+        })
+      }
 
       // Update every stores with current value
       this.store = ({value, groups, replace} = {}) => {

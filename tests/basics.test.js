@@ -89,7 +89,7 @@ test('Deleting datas', async() => {
 test('Request gets', () => {
   return request('users')
     .get(0)
-    .result.then(user => expect(user).toEqual(stores.users.get(0)));
+    .then(user => expect(user).toEqual(stores.users.get(0)));
 });
 
 test('Replace', () => {
@@ -105,7 +105,7 @@ test('Replace', () => {
       value: replacement,
       replace: users[0].id,
     })
-    .result.then(() => {
+    .then(() => {
       expect(stores.users.getArray()[0]).toEqual(replacement);
     });
 });
@@ -125,13 +125,13 @@ test('Oneshot saved calls', async() => {
   expect(datascheme.isRunningCall(savedCall.callId)).toBe(true);
   return request('users')
     .savedCall(savedCall)
-    .result.then(result => {
+    .then(result => {
       expect(result).toBe(1);
       return Promise.all([
         new Promise((resolve, reject) => setTimeout(() => resolve(true, 50))),
         request('users')
           .savedCall(savedCall)
-          .result.then(result => expect(result).toBe(1)),
+          .then(result => expect(result).toBe(1)),
       ]).then(() =>
         expect(datascheme.isRunningCall(savedCall.callId)).toBe(false)
       );

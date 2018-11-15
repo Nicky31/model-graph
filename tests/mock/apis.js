@@ -34,7 +34,7 @@ const todos = {
     owner: 0,
     done: false,
     objectId: 2,
-  },
+  }
 };
 
 export const db = {users, todos};

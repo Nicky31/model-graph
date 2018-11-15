@@ -22,29 +22,27 @@ export default function DataScheme(models, args = {}) {
     this.proto = {}
 
     this.link = function(attr, linkedModel, opts = {}) {
-      var modelName = ''
+      var linkedModelName = ''
       // Give normalizr entity the information of linked model
       if (Array.isArray(linkedModel)) {
         this.normalizr.define({[attr]: linkedModel.map(cur => cur.normalizr)})
-        modelName = linkedModel[0].name
+        linkedModelName = linkedModel[0].name
       } else {
         this.normalizr.define({[attr]: linkedModel.normalizr})
-        modelName = linkedModel.name
+        linkedModelName = linkedModel.name
       }
 
-      this.dependencies[attr] = {
-        model: linkedModel
-      }
+      this.dependencies[attr] = { model: linkedModel }
 
       // 'via' autolinks
       if (opts.via) {
         if (!opts.via.attr) {
           throw new Error({error: 'model-graph \'via\' option of entity.link() at least needs \'attr\' attribute.'})
         }
-        if (!(linkedModel in self.autolinks)) {
-          self.autolinks[linkedModel] = []
+        if (!(linkedModelName in self.autolinks)) {
+          self.autolinks[linkedModelName] = []
         }
-        self.autolinks[linkedModel].push({
+        self.autolinks[linkedModelName].push({
           linkedModel: name,
           linkedAttr: attr,
           via: opts.via.attr, // Corresponds to linkedModel attribute (which have to points current model id)
@@ -66,13 +64,19 @@ export default function DataScheme(models, args = {}) {
 
   // Define a new model with its associated store
   this.define = (name, opts) => {
-    var proto = opts.proto || {};
-    Object.defineProperty(proto, '_populate', {value: _populate});
-    Object.defineProperty(proto, '_model', {value: name});
-
     var model = new EntityModel(name, {
       idAttribute: opts.idAttribute || args.idAttribute
     });
+
+    var proto = opts.proto || {};
+    Object.defineProperty(proto, '_populate', {value: _populate});
+    Object.defineProperty(proto, '_model', {value: name});
+    Object.defineProperty(proto, '_id', {
+      get: function() {
+        return this[model.idAttribute]
+      }
+    })
+
     model.proto = proto
 
     this.models[name] = {
