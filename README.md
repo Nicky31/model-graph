@@ -43,6 +43,9 @@ Model options :
 * idAttribute : id attribute name, if different from DataScheme level
 * proto : prototype object to be inherited by `modelName` entities
 
+#### void linking(schemeFn: function)
+Call schemeFn with an object containing every models as parameter, in order to link them in a more convenient way.
+
 #### object allStores()
 Returns every stores in a single object
 

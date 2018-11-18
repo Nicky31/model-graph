@@ -89,6 +89,14 @@ export default function DataScheme(models, args = {}) {
     return this;    
   }
 
+  // Call schemeFn with every models as parameter
+  this.linking = schemeFn => {
+    const models = Object.keys(this.models).reduce((stores, curName) => {
+      stores[curName] = this.model(curName);
+      return stores;
+    }, {});
+    schemeFn(models)
+  }
 
   // Getters
   this.model = name => {
