@@ -23,9 +23,6 @@
  * Name of store which has to recv datas ->
  *  outputStore: string,
 
- * Add result entity (must be single) id to a dependant model field ->
- *  updateLinkedModel: {type, id, field},
-
  * Callback triggered on call's end ->
  *  endCallback: ({result, dispatch, getState}) => result
  * }

@@ -11,7 +11,7 @@ export default function DataScheme(models, args = {}) {
   // may be autofilled from first model instantiation
   this.autolinks = {};
 
-  function EntityModel(name, opts = {}) {
+  function Model(name, opts = {}) {
     this.idAttribute = opts.idAttribute || 'id'
     this.normalizr = new schema.Entity(name, {}, {
       idAttribute: this.idAttribute,
@@ -64,7 +64,7 @@ export default function DataScheme(models, args = {}) {
 
   // Define a new model with its associated store
   this.define = (name, opts) => {
-    var model = new EntityModel(name, {
+    var model = new Model(name, {
       idAttribute: opts.idAttribute || args.idAttribute
     });
 

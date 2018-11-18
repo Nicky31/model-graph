@@ -47,13 +47,14 @@ export default function requestBuilder(datascheme) {
         return this;
       };
 
-      this.delete = input2 => {
+      this.delete = id => {
         return this.call(data => {
-          if (!data) {
+          id = (id || data.id)
+          if (id === undefined) {
             return;
           }
           this.updatedStores.add(targetStore);
-          return store.delete(data.id);
+          return store.delete(id);
         });
       };
 
@@ -78,35 +79,13 @@ export default function requestBuilder(datascheme) {
               ? entity[autolink.via][linkedModelIdAttr]
               : entity[autolink.via];              
             const linkedEntity = linkedStore.get(linkedId)
-            if (!linkedEntity) {
+            if (!linkedEntity ||
+                !linkedStore.updateLinkField(linkedId, autolink.linkedAttr, entity[idAttribute])
+            ) {
               return
             }
-            // Check if linked attribute is an array : concat
-            let updatedAttr = linkedEntity[autolink.linkedAttr];
-            if (Array.isArray(updatedAttr) &&
-              !updatedAttr.includes(entity[idAttribute])
-            ) {
-              updatedAttr = [...updatedAttr, entity[idAttribute]];
-            } else if (!Array.isArray(updatedAttr) &&
-              updatedAttr !== entity[idAttribute]
-            ) {
-              updatedAttr = entity[idAttribute];
-            } else {
-              return
-            }              
-          
-            // Current entity can link to another model entity ; push it
-            updates.push({
-              [linkedModelIdAttr]: linkedId,
-              [autolink.linkedAttr]: updatedAttr,
-            })              
-          })
-
-          // Update all of these linked entities
-          if (updates.length) {
-            linkedStore.update(updates)
             this.updatedStores.add(autolink.linkedModel);
-          }
+          })
         })
       }
 

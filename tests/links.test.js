@@ -41,7 +41,6 @@ test('Auto linking', () => {
         .value({objectId: 300, descr: 'autolinked', owner: 300, done: false})
         .store()
         .then(() => {
-          console.log(JSON.stringify(stores.users.get(300)))
           expect(stores.users.get(300).todos[1]).toEqual(300)
         })
     })

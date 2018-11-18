@@ -43,11 +43,17 @@ export default function DataStore(model, opts) {
   function updateLinkField(id, field, newId) {
     var entity = this.get(id);
     if (Array.isArray(entity[field])) {
+      if (entity[field].includes(newId)) {
+        return false;
+      }
       entity[field].push(newId);
     } else {
+      if (entity[field] === newId) {
+        return false;
+      }
       entity[field] = newId;
     }
-    return entity;
+    return true;
   }
 
   function updateEntity(entity) {
