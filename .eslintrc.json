@@ -6,11 +6,14 @@
 	    "ecmaFeatures": {
 	        "jsx": true,
 	        "modules": true,
-	        "experimentalObjectRestSpread": true
-	    }
+			"experimentalObjectRestSpread": true
+		}
 	},
 	"env": {
 		"es6": true,
 		"jest": true
-	}
+	},
+	"rules": {
+		"no-multi-str": 0
+	 }	
 }

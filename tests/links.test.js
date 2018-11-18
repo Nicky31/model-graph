@@ -36,13 +36,13 @@ test('Auto linking', () => {
 
   return (
     request('users').value({id: 300, name: 'tim', todos: [0]})
-    .store().then(() => {
-      return request('todos')
-        .value({objectId: 300, descr: 'autolinked', owner: 300, done: false})
-        .store()
-        .then(() => {
-          expect(stores.users.get(300).todos[1]).toEqual(300)
-        })
-    })
-  )
-})
+      .store().then(() => {
+        return request('todos')
+          .value({objectId: 300, descr: 'autolinked', owner: 300, done: false})
+          .store()
+          .then(() => {
+            expect(stores.users.get(300).todos[1]).toEqual(300);
+          });
+      })
+  );
+});

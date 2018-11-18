@@ -1,5 +1,5 @@
 export default function DataStore(model, opts) {
-  this.model = model
+  this.model = model;
   // Mapping entity ids to entities
   this.entitiesMap = {};
   // Entities groups, maps groups names to entities id array

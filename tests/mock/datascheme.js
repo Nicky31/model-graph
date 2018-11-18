@@ -3,7 +3,7 @@ import {DataScheme} from '../../src/';
 const datascheme = new DataScheme(
   {
     users: {
-      idAttribute: 'id'
+      idAttribute: 'id',
     },
 
     todos: {},
@@ -17,15 +17,15 @@ const datascheme = new DataScheme(
 datascheme.linking(({ users, todos, comments }) => {
   users.link('todos', [todos], {
     via: {
-      attr: 'owner'
-    }
-  })
+      attr: 'owner',
+    },
+  });
 
-  todos.link('owner', users)
+  todos.link('owner', users);
 
   comments
     .link('todo', todos)
-    .link('author', users)
-})
+    .link('author', users);
+});
 
-export default datascheme
+export default datascheme;

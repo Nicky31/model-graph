@@ -12,60 +12,62 @@ export default function DataScheme(models, args = {}) {
   this.autolinks = {};
 
   function Model(name, opts = {}) {
-    this.idAttribute = opts.idAttribute || 'id'
+    this.idAttribute = opts.idAttribute || 'id';
     this.normalizr = new schema.Entity(name, {}, {
       idAttribute: this.idAttribute,
-      ...(opts.normalizrEntityParams || {})
-    })
-    this.name = name
-    this.dependencies = {}
-    this.proto = {}
+      ...(opts.normalizrEntityParams || {}),
+    });
+    this.name = name;
+    this.dependencies = {};
+    this.proto = {};
 
     this.link = function(attr, linkedModel, opts = {}) {
-      var linkedModelName = ''
+      var linkedModelName = '';
       // Give normalizr entity the information of linked model
       if (Array.isArray(linkedModel)) {
-        this.normalizr.define({[attr]: linkedModel.map(cur => cur.normalizr)})
-        linkedModelName = linkedModel[0].name
+        this.normalizr.define({[attr]: linkedModel.map(cur => cur.normalizr)});
+        linkedModelName = linkedModel[0].name;
       } else {
-        this.normalizr.define({[attr]: linkedModel.normalizr})
-        linkedModelName = linkedModel.name
+        this.normalizr.define({[attr]: linkedModel.normalizr});
+        linkedModelName = linkedModel.name;
       }
 
-      this.dependencies[attr] = { model: linkedModel }
+      this.dependencies[attr] = { model: linkedModel };
 
       // 'via' autolinks
       if (opts.via) {
         if (!opts.via.attr) {
-          throw new Error({error: 'model-graph \'via\' option of entity.link() at least needs \'attr\' attribute.'})
+          throw new Error({error: 'model-graph \'via\' option of entity.link() \
+            at least needs \'attr\' attribute.'});
         }
         if (!(linkedModelName in self.autolinks)) {
-          self.autolinks[linkedModelName] = []
+          self.autolinks[linkedModelName] = [];
         }
         self.autolinks[linkedModelName].push({
           linkedModel: name,
           linkedAttr: attr,
-          via: opts.via.attr, // Corresponds to linkedModel attribute (which have to points current model id)
-        });        
+          // Corresponds to linkedModel attribute (pointing to cur model id) :
+          via: opts.via.attr,
+        });
       }
 
-      return this
-    }
+      return this;
+    };
 
     this.normalize = function(datas) {
-      var model = this.normalizr
+      var model = this.normalizr;
       if (Array.isArray(datas)) {
         model = [model];
       }
       var ret = normalize(datas, model);
       return ret;
-    }
+    };
   }
 
   // Define a new model with its associated store
   this.define = (name, opts) => {
     var model = new Model(name, {
-      idAttribute: opts.idAttribute || args.idAttribute
+      idAttribute: opts.idAttribute || args.idAttribute,
     });
 
     var proto = opts.proto || {};
@@ -73,11 +75,11 @@ export default function DataScheme(models, args = {}) {
     Object.defineProperty(proto, '_model', {value: name});
     Object.defineProperty(proto, '_id', {
       get: function() {
-        return this[model.idAttribute]
-      }
-    })
+        return this[model.idAttribute];
+      },
+    });
 
-    model.proto = proto
+    model.proto = proto;
 
     this.models[name] = {
       model,
@@ -86,8 +88,8 @@ export default function DataScheme(models, args = {}) {
       opts,
     };
     this.models[name].Request = ModelRequest(this)(name);
-    return this;    
-  }
+    return this;
+  };
 
   // Call schemeFn with every models as parameter
   this.linking = schemeFn => {
@@ -95,13 +97,15 @@ export default function DataScheme(models, args = {}) {
       stores[curName] = this.model(curName);
       return stores;
     }, {});
-    schemeFn(models)
-  }
+    schemeFn(models);
+  };
 
   // Getters
   this.model = name => {
     if (!(name in this.models)) {
-      throw new Error({error: `model-graph: try to get unknown '${name}' model`})
+      throw new Error({
+        error: `model-graph: try to get unknown '${name}' model`,
+      });
     }
     return this.models[name] && this.models[name].model;
   };

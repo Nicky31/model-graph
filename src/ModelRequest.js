@@ -18,8 +18,8 @@ export default function requestBuilder(datascheme) {
       };
 
       this.then = function(...args) {
-        return this.result.then.call(this.result, ...args)
-      }
+        return this.result.then(...args);
+      };
 
       // Perform call, save their result and metadatas
       // If oneshot is false, fn can't be called twice at the same time,
@@ -49,7 +49,7 @@ export default function requestBuilder(datascheme) {
 
       this.delete = id => {
         return this.call(data => {
-          id = (id || data.id)
+          id = (id || data.id);
           if (id === undefined) {
             return;
           }
@@ -69,25 +69,25 @@ export default function requestBuilder(datascheme) {
         var autolinks = datascheme.autolinks[modelName];
         // Go through each of them
         autolinks.forEach(autolink => {
-          const linkedStore = datascheme.store(autolink.linkedModel)
-          const linkedModelIdAttr = linkedStore.model.idAttribute
-          let updates = [] // link updates we will push to linkedStore
+          const linkedStore = datascheme.store(autolink.linkedModel);
+          const linkedModelIdAttr = linkedStore.model.idAttribute;
 
-          // Get each of these entities that may fill remote entities of current autolink
+          // Get each of these entities that may fill
+          // remote entities of current autolink
           entities.forEach(entity => {
             const linkedId = typeof entity[autolink.via] === 'object'
               ? entity[autolink.via][linkedModelIdAttr]
-              : entity[autolink.via];              
-            const linkedEntity = linkedStore.get(linkedId)
-            if (!linkedEntity ||
-                !linkedStore.updateLinkField(linkedId, autolink.linkedAttr, entity[idAttribute])
+              : entity[autolink.via];
+            const linkedEntity = linkedStore.get(linkedId);
+            if (!linkedEntity || !linkedStore.updateLinkField(
+              linkedId, autolink.linkedAttr, entity[idAttribute])
             ) {
-              return
+              return;
             }
             this.updatedStores.add(autolink.linkedModel);
-          })
-        })
-      }
+          });
+        });
+      };
 
       // Update every stores with current value
       this.store = ({value, groups, replace} = {}) => {
