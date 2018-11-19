@@ -1,14 +1,14 @@
-import reduxModelStoreMiddleware from './middleware';
+import modelGraphReduxMiddleware from './middleware';
 
 export function reduxMiddleware(params) {
   if (!params.datascheme) {
-    throw new Error({error: 'Missing ReduxModelStore datascheme'});
+    throw new Error({error: 'Missing model-graph datascheme'});
   }
-  return reduxModelStoreMiddleware(params);
+  return modelGraphReduxMiddleware(params);
 }
 
-export const DataScheme = require('./DataScheme.js').default;
+export { default as DataScheme } from './DataScheme.js';
 
-export const DataStore = require('./DataStore.js').default;
+export { default as DataStore } from './DataStore';
 
-export const requestBuilder = require('./ModelRequest.js').default;
+export { default as requestBuilder } from './ModelRequest';

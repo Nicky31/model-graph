@@ -28,7 +28,7 @@
  * }
  */
 
-function reduxModelStoreMiddleware({
+function modelGraphReduxMiddleware({
   dispatchAction = 'UPDATE_MODEL_STORE',
   datascheme,
 }) {
@@ -116,4 +116,4 @@ function reduxModelStoreMiddleware({
   };
 }
 
-export default reduxModelStoreMiddleware;
+export default modelGraphReduxMiddleware;

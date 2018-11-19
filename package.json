@@ -2,25 +2,33 @@
   "name": "model-graph",
   "version": "0.2.2",
   "description": "Normalized model graph management library",
-  "main": "index.js",
+  "main": "dist/model-graph.js",
+  "module": "dist/model-graph.esm.js",
+  "browser": "dist/model-graph.umd.js",
   "scripts": {
-    "lint": "eslint --ignore-path .gitignore .",
+    "lint": "eslint src",
     "test": "jest",
-    "deploy": "npm run lint && npm run test && git push gitlab master --follow-tag"
+    "build": "rollup -c",
+    "build:watch": "rollup -c -w",
+    "build:prod": "NODE_ENV=production rollup -c",
+    "publish": "npm run lint && npm run test && git push gitlab master --follow-tag"
   },
   "author": "Martin Caussanel",
   "license": "ISC",
   "dependencies": {
-    "normalizr": "^3.3.0",
-    "prettier": "^1.14.3"
+    "normalizr": "^3.3.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
+    "babel-core": "^7.0.0-bridge.0",    
     "babel-jest": "^23.6.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
     "eslint": "^5.8.0",
     "eslint-config-strongloop": "^2.1.0",
-    "jest": "^23.6.0"
+    "jest": "^23.6.0",
+    "rollup": "^0.67.3",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-uglify-es": "0.0.1",
+    "uglify-es": "^3.3.9"
   }
 }

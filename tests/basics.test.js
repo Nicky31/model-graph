@@ -152,9 +152,13 @@ test('Saved calls', async() => {
 
   request('users').savedCall(savedCall);
   expect(datascheme.isRunningCall(savedCall.callId)).toBe(true);
-  var result = await request('users').savedCall(savedCall).result;
-  expect(result).toBe(1);
-  expect(datascheme.isRunningCall(savedCall.callId)).toBe(false);
-  result = await request('users').savedCall(savedCall).result;
-  expect(result).toBe(2);
+  request('users').savedCall(savedCall)
+    .result.then(result => {
+      expect(result).toBe(1);
+      expect(datascheme.isRunningCall(savedCall.callId)).toBe(false);
+      request('users').savedCall(savedCall)
+        .result.then(result => {
+          expect(result).toBe(2);
+        });
+    });
 });

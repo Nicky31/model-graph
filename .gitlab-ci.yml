@@ -30,4 +30,6 @@ publish:
     - triggers
   script:
     - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+    - npm run build
+    - npm run build:prod
     - npm publish --access=public

@@ -1,4 +1,4 @@
-import {DataScheme} from '../../src/';
+import {DataScheme} from '../../dist/model-graph.js';
 
 const datascheme = new DataScheme(
   {
