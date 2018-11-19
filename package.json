@@ -1,6 +1,6 @@
 {
   "name": "model-graph",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Normalized model graph management library",
   "main": "dist/model-graph.js",
   "module": "dist/model-graph.es.js",
