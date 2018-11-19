@@ -14,6 +14,7 @@ lint:
     - triggers  
   script:
     - npm run lint
+  allow_failure: true
 
 test:
   image: node:10
@@ -21,6 +22,7 @@ test:
     - tags
     - triggers  
   script:
+    - npm run build
     - npm test
 
 publish:  

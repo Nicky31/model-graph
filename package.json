@@ -3,7 +3,7 @@
   "version": "0.2.3",
   "description": "Normalized model graph management library",
   "main": "dist/model-graph.js",
-  "module": "dist/model-graph.esm.js",
+  "module": "dist/model-graph.es.js",
   "browser": "dist/model-graph.umd.js",
   "scripts": {
     "lint": "eslint src",
@@ -11,7 +11,7 @@
     "build": "rollup -c",
     "build:watch": "rollup -c -w",
     "build:prod": "NODE_ENV=production rollup -c",
-    "publish": "npm run lint && npm run test && git push gitlab master --follow-tag"
+    "publish": "npm run lint && npm run build && npm run test && git push gitlab master --follow-tag"
   },
   "author": "Martin Caussanel",
   "license": "ISC",
