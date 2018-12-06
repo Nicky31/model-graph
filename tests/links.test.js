@@ -21,7 +21,7 @@ test('Insert linked models : From single link attributes', () => {
   return (
     request('todos')
       .call(() => fetchTodos({populate: true}))
-      // .store({groups: ['myTodos']})
+      .store({groups: ['myTodos']})
       .store()
       .then(todos => {
         expect(stores.todos.getGroup('all')).toEqual(Object.values(db.todos));

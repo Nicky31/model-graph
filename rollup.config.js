@@ -14,10 +14,10 @@ export default [
     output: [
       { file: `${destBase}${destExtension}`, format: 'cjs' },
       { file: `${destBase}.es${destExtension}`, format: 'es' },
-      { file: `${destBase}.umd${destExtension}`, format: 'umd', name },
+      { file: `${destBase}.umd${destExtension}`, format: 'umd', name, globals: {normalizr: 'normalizr'} },
     ],
     plugins: [
-      babel(),
+      babel({runtimeHelpers: true}),
       isProduction && uglify({}, minify),
     ].filter(Boolean),
   },
