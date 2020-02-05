@@ -75,7 +75,7 @@ function modelGraphReduxMiddleware({
     }
 
     function quickInsertRequest(action) {
-      var objectId = Date.now();
+      var objectId =  action.quickInsert.objectId || Date.now();
 
       var quickInsert = {...action.quickInsert, objectId};
       fetchRequest({
@@ -84,7 +84,7 @@ function modelGraphReduxMiddleware({
       });
       return fetchRequest({
         ...action,
-        replace: objectId,
+        [action.quickInsert.objectId ? 'update' : 'replace']: objectId,
       });
     }
 
